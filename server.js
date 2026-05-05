@@ -1,6 +1,6 @@
 const express = require('express');
-const nodemailer = require('nodemailer');
 const multer = require('multer');
+const axios = require('axios'); // Axios ersetzt Nodemailer
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 require('dotenv').config();
 
@@ -11,15 +11,6 @@ app.use(express.static('.'));
 
 // --- GEMINI SETUP ---
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-// --- EMAIL SETUP ---
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'Faimzee@gmail.com',
-        pass: process.env.EMAIL_PASS 
-    }
-});
 
 // --- API ENDPUNKT ---
 app.post('/api/reklamation', upload.single('document'), async (req, res) => {
@@ -80,21 +71,26 @@ app.post('/api/reklamation', upload.single('document'), async (req, res) => {
         if (imagePart) requestContent.push(imagePart);
 
         const result = await model.generateContent(requestContent);
+        
+        // Sicherheits-Fix: Bereinigt die KI-Antwort, falls Markdown (```json) mitgeschickt wird
         const aiResponseText = result.response.text();
-        const aiData = JSON.parse(aiResponseText);
+        let cleanJson = aiResponseText.split('
+```json').join('');
+        cleanJson = cleanJson.split('```').join('').trim();
+        const aiData = JSON.parse(cleanJson);
         
         console.log(`KI Analyse | Prio: ${aiData.prioritaet} | Plausibel: ${aiData.plausibel}`);
 
-        // Email Versand vorbereiten (MIT optionalem Personaler-CC)
-        const mailOptions = {
-            from: 'Strauss Support Bot <Faimzee@gmail.com>',
-            to: 'Faimzee@gmail.com', // Geht immer an dich als Support-Zentrale
-            cc: data.testEmail ? data.testEmail : undefined, // FÜGT DEN PERSONALER HINZU, WENN AUSGEFÜLLT!
+        // --- EMAIL VERSAND MIT BREVO API ---
+        const emailPayload = {
+            sender: { name: "Strauss Support Bot", email: "Faimzee@gmail.com" }, // Muss bei Brevo verifiziert sein
+            to: [{ email: "Faimzee@gmail.com" }], // Geht immer an dich
+            cc: data.testEmail ? [{ email: data.testEmail }] : undefined, // Personaler-CC
             subject: `[${aiData.prioritaet}] ${!aiData.plausibel ? '⚠️ ABLEHNUNG PRÜFEN: ' : ''}Reklamation für Artikel ${data.articleNumber}`,
-            text: `Reklamations-Details:\n
+            textContent: `Reklamations-Details:\n
             Kunde: ${data.fullName}
             E-Mail: ${data.email}
-            Adresse: ${data.street}, ${data.city}
+            Adresse: ${data.street || "-"}, ${data.city || "-"}
             
             Produkt: ${data.product}
             Artikelnummer: ${data.articleNumber}
@@ -119,13 +115,26 @@ app.post('/api/reklamation', upload.single('document'), async (req, res) => {
             ${aiData.supportAntwortEntwurf}
             ------------------------------------------\n
             Sofort-Antwort auf der Website war:\n${aiData.kundenAntwort}`,
-            attachments: file ? [{ filename: file.originalname, content: file.buffer }] : []
+            
+            // Wenn ein Bild existiert, an Brevo anhängen
+            attachment: file ? [{ 
+                content: file.buffer.toString('base64'), 
+                name: file.originalname 
+            }] : undefined
         };
 
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) console.log("Mail-Fehler:", error);
-            else console.log("Email erfolgreich versandt!");
-        });
+        // Brevo API Call (HTTP statt SMTP - wird von Render NICHT blockiert)
+        try {
+            await axios.post('[https://api.brevo.com/v3/smtp/email](https://api.brevo.com/v3/smtp/email)', emailPayload, {
+                headers: {
+                    'api-key': process.env.BREVO_API_KEY,
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log("Email erfolgreich via Brevo API versandt!");
+        } catch (mailError) {
+            console.error("Brevo API Fehler:", mailError.response ? mailError.response.data : mailError.message);
+        }
 
         res.status(200).json({ status: 'success', aiMsg: aiData.kundenAntwort });
 
@@ -135,12 +144,12 @@ app.post('/api/reklamation', upload.single('document'), async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
     console.log(`--------------------------------------------------`);
-    console.log(`🚀 Server läuft auf http://localhost:${PORT}`);
+    console.log(`🚀 Server läuft auf Port ${PORT}`);
     console.log(`🧠 KI-Copilot: AKTIVIERT`);
     console.log(`👁️ Multimodale Bilderkennung: AKTIVIERT`);
-    console.log(`📬 Personaler-Test-Routing: AKTIVIERT`);
+    console.log(`📬 Personaler-Test-Routing (Brevo API): AKTIVIERT`);
     console.log(`--------------------------------------------------`);
 });
