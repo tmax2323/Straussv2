@@ -47,8 +47,8 @@ app.post('/api/reklamation', upload.single('document'), async (req, res) => {
 
         Deine Aufgaben:
         1. BILDANALYSE (Falls ein Bild vorhanden ist): Beschreibe kurz, was auf dem Bild zu sehen ist. Schätze kritisch ein, ob das Gesehene zur Reklamation passt (z.B. Ist ein Riss am Knie wirklich ein Materialfehler oder normaler Verschleiß? Handelt es sich wirklich um den angegebenen Artikel?). Falls kein Bild angehängt wurde, schreibe "Kein Bild zur Prüfung eingereicht".
-        2. PLAUSIBILITÄT: Prüfe logisch, ob diese Reklamation Sinn macht (Kaufdatum, Grund, deine Bildanalyse).
-        3. STIMMUNG & PRIORITÄT: Analysiere die Stimmung und leite eine Priorität ab (HOCH, MITTEL, NIEDRIG oder PRÜFUNG NÖTIG).
+        2. PLAUSIBILITÄT: Prüfe logisch, ob diese Reklamation Sinn macht (Ist das Kaufdatum länger als 2 Jahre her? (Gewährleistung), Grund, deine Bildanalyse).
+        3. STIMMUNG & PRIORITÄT: Analysiere die Stimmung und leite eine Priorität ab (HOCH, MITTEL, NIEDRIG).
         4. KUNDENANTWORT (Website): Eine sehr kurze Bestätigung (max 2 Sätze) für den Browser ("Ticket ist eingegangen..."). Sprich den Kunden mit Namen an.
         5. SUPPORT-ENTWURF: Schreibe eine vollständige E-Mail, die der Support-Mitarbeiter 1:1 kopieren und senden kann. 
            - Sprich den Kunden persönlich an (z.B. "Hallo ${data.fullName}").
