@@ -81,7 +81,7 @@ app.post('/api/reklamation', upload.single('document'), async (req, res) => {
 
         // --- EMAIL VERSAND MIT BREVO API ---
         const emailPayload = {
-            sender: { name: "Strauss Support Bot", email: "Tuengerthal.Max@googlemail.com" }, // Muss bei Brevo verifiziert sein
+            sender: { name: "Strauss Support Bot", email: "tuengerthal.max@googlemail.com" }, // Muss bei Brevo verifiziert sein
             to: [{ email: "Faimzee@gmail.com" }], // Geht immer an dich
             cc: data.testEmail ? [{ email: data.testEmail }] : undefined, // Personaler-CC
             subject: `[${aiData.prioritaet}] ${!aiData.plausibel ? '⚠️ ABLEHNUNG PRÜFEN: ' : ''}Reklamation für Artikel ${data.articleNumber}`,
