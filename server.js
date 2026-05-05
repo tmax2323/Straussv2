@@ -20,8 +20,7 @@ app.post('/api/reklamation', upload.single('document'), async (req, res) => {
         const file = req.file;
 
         const model = genAI.getGenerativeModel({ 
-            model: "gemini-2.5-flash-lite",
-            generationConfig: { responseMimeType: "application/json" }
+            model: "gemini-2.5-flash-lite"
         });
 
         const heute = new Date().toISOString().split('T')[0];
