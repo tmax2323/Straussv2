@@ -72,11 +72,10 @@ app.post('/api/reklamation', upload.single('document'), async (req, res) => {
 
         const result = await model.generateContent(requestContent);
         
-        // Sicherheits-Fix: Bereinigt die KI-Antwort, falls Markdown (```json) mitgeschickt wird
+        // Sicherheits-Fix: Bereinigt die KI-Antwort (kopiersichere Variante)
         const aiResponseText = result.response.text();
-        let cleanJson = aiResponseText.split('
-```json').join('');
-        cleanJson = cleanJson.split('```').join('').trim();
+        let cleanJson = aiResponseText.split("```json").join("");
+        cleanJson = cleanJson.split("```").join("").trim();
         const aiData = JSON.parse(cleanJson);
         
         console.log(`KI Analyse | Prio: ${aiData.prioritaet} | Plausibel: ${aiData.plausibel}`);
