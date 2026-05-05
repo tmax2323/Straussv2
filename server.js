@@ -123,7 +123,7 @@ app.post('/api/reklamation', upload.single('document'), async (req, res) => {
 
         // Brevo API Call (HTTP statt SMTP - wird von Render NICHT blockiert)
         try {
-            await axios.post('[https://api.brevo.com/v3/smtp/email](https://api.brevo.com/v3/smtp/email)', emailPayload, {
+            await axios.post('https://api.brevo.com/v3/smtp/email', emailPayload, {
                 headers: {
                     'api-key': process.env.BREVO_API_KEY,
                     'Content-Type': 'application/json'
