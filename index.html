@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strauss Smart Reklamation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-top: 6px solid #e2001a;
+        }
+        h1 {
+            color: #e2001a;
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        p.subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 0.95em;
+        }
+        .recruiter-box {
+            background-color: #f8f9fa;
+            border: 2px dashed #6c757d;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+        }
+        .recruiter-box label {
+            color: #495057;
+            margin-top: 0;
+            font-size: 0.95em;
+        }
+        .recruiter-box p {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #444;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: inherit;
+            background-color: #fafafa;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #e2001a;
+            background-color: #fff;
+        }
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        .form-row > div {
+            flex: 1;
+        }
+        button {
+            background-color: #e2001a;
+            color: #fff;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 25px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #cc0017;
+        }
+        button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+        #responseBox {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #e2001a;
+            display: none;
+            border-radius: 0 4px 4px 0;
+        }
+        #responseBox h3 {
+            margin-top: 0;
+            color: #e2001a;
+            font-size: 1.1em;
+        }
+        .spinner {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #e2001a;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Smart Reklamation</h1>
+    <p class="subtitle">Willkommen im Workwear-Valley. Wir kümmern uns drum.</p>
+
+    <form id="reklamationForm">
+        
+        <!-- NEUE, DEZENTERE DEMO-BOX -->
+        <div class="recruiter-box">
+            <label for="testEmail">🧪 Demo-Modus: Live-Test der KI-Analyse (Optional)</label>
+            <p>Zu Demonstrationszwecken: Tragen Sie hier eine E-Mail-Adresse ein, um das Tool live zu testen. Sie erhalten eine exakte Kopie der internen Support-Mail inkl. Bildanalyse, Priorisierung und KI-Antwort-Entwurf.</p>
+            <input type="email" id="testEmail" name="testEmail" placeholder="ihre.email@beispiel.de">
+        </div>
+
+        <label for="fullName">Vor- und Nachname</label>
+        <input type="text" id="fullName" name="fullName" required placeholder="Max Macher">
+
+        <label for="email">E-Mail-Adresse (Kunde)</label>
+        <input type="email" id="email" name="email" required placeholder="macher@beispiel.de">
+
+        <div class="form-row">
+            <div>
+                <label for="street">Straße & Hausnummer</label>
+                <input type="text" id="street" name="street" required placeholder="Workwearstraße 1">
+            </div>
+            <div>
+                <label for="city">PLZ & Ort</label>
+                <input type="text" id="city" name="city" required placeholder="63599 Biebergemünd">
+            </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;">
+
+        <!-- REKLAMATIONSDATEN -->
+        <label for="product">Produktgruppe</label>
+        <select id="product" name="product" required>
+            <option value="Hosen">Hosen</option>
+            <option value="Jacken">Jacken</option>
+            <option value="Shirt">Shirt</option>
+            <option value="Schuhe">Schuhe</option>
+            <option value="Accessoires">Accessoires</option>
+            <option value="Sonstiges">Sonstiges</option>
+        </select>
+
+        <label for="articleNumber">Artikelnummer</label>
+        <input type="text" id="articleNumber" name="articleNumber" placeholder="z.B. 12345.67" required>
+
+        <label for="reason">Grund der Reklamation</label>
+        <select id="reason" name="reason" required>
+            <option value="Materialfehler">Materialfehler (z.B. Naht gerissen)</option>
+            <option value="Verschleiß/Abnutzung">Verschleiß/Abnutzung</option>
+            <option value="Falschlieferung">Falschlieferung</option>
+            <option value="Passt nicht">Passt nicht</option>
+        </select>
+
+        <label for="date">Kaufdatum </label>
+        <input type="date" id="date" name="date" required>
+
+        <label for="remarks">Ihre Bemerkung zur Reklamation</label>
+        <textarea id="remarks" name="remarks" rows="4" placeholder="Erklären Sie uns genau was passiert ist..."></textarea>
+
+        <label for="document">Foto / Rechnung / Kassenbeleg</label>
+        <input type="file" id="document" name="document" accept="image/*,.pdf">
+
+        <button type="submit" id="submitBtn">Ticket absenden</button>
+    </form>
+
+    <div class="spinner" id="loadingSpinner">
+        KI analysiert dein Ticket... Bitte warten.
+    </div>
+
+    <div id="responseBox">
+        <h3>Antwort vom Strauss-Bot:</h3>
+        <p id="aiResponseMessage"></p>
+    </div>
+</div>
+
+<script>
+    document.getElementById('reklamationForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const form = this;
+        const submitBtn = document.getElementById('submitBtn');
+        const spinner = document.getElementById('loadingSpinner');
+        const responseBox = document.getElementById('responseBox');
+        const aiResponseMessage = document.getElementById('aiResponseMessage');
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Sende Daten...";
+        spinner.style.display = 'block';
+        responseBox.style.display = 'none';
+
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch('/api/reklamation', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                aiResponseMessage.innerText = result.aiMsg;
+                responseBox.style.borderLeftColor = '#4caf50';
+                responseBox.style.display = 'block';
+                form.reset();
+            } else {
+                aiResponseMessage.innerText = "Fehler: " + result.message;
+                responseBox.style.borderLeftColor = '#e2001a';
+                responseBox.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Fetch-Fehler:', error);
+            aiResponseMessage.innerText = "Server nicht erreichbar. Läuft dein Node.js Backend?";
+            responseBox.style.borderLeftColor = '#e2001a';
+            responseBox.style.display = 'block';
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Ticket absenden";
+            spinner.style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>
