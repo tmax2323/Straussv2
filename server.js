@@ -48,12 +48,12 @@ app.post('/api/reklamation', upload.single('document'), async (req, res) => {
         Deine Aufgaben:
         1. BILDANALYSE (Falls ein Bild vorhanden ist): Beschreibe kurz, was auf dem Bild zu sehen ist. Schätze kritisch ein, ob das Gesehene zur Reklamation passt (z.B. Ist ein Riss am Knie wirklich ein Materialfehler oder normaler Verschleiß? Handelt es sich wirklich um den angegebenen Artikel?). Falls kein Bild angehängt wurde, schreibe "Kein Bild zur Prüfung eingereicht".
         2. PLAUSIBILITÄT: Prüfe logisch, ob diese Reklamation Sinn macht (Ist das Kaufdatum länger als 2 Jahre her? (Gewährleistung), Grund, deine Bildanalyse).
-        3. STIMMUNG & PRIORITÄT: Analysiere die Stimmung und leite eine Priorität ab (HOCH, MITTEL, NIEDRIG).
-        4. KUNDENANTWORT (Website): Eine sehr kurze Bestätigung (max 2 Sätze) für den Browser ("Ticket ist eingegangen..."). Sprich den Kunden mit Namen an.
+        3. STIMMUNG & PRIORITÄT: Analysiere die Stimmung und leite eine Priorität ab (HOCH, MITTEL, NIEDRIG). Die Priorität soll bei verärgerten Kunden HOCH angsetzt werden, bei normalen Anfragen Niedrig. 
+        4. KUNDENANTWORT (Website): Eine sehr kurze Bestätigung (max 2 Sätze) für den Browser ("Ticket ist eingegangen..."). Sprich den Kunden mit Namen und im Strauss-Stil an.
         5. SUPPORT-ENTWURF: Schreibe eine vollständige E-Mail, die der Support-Mitarbeiter 1:1 kopieren und senden kann. 
            - Sprich den Kunden persönlich an (z.B. "Hallo ${data.fullName}").
-           - Wenn PLAUSIBEL: Entschuldige dich für den Defekt und kündige z.B. einen kostenlosen Ersatz an.
-           - Wenn UNPLAUSIBEL (z.B. Bild zeigt puren Verschleiß): Formuliere eine FREUNDLICHE ABLEHNUNG im Strauss-Stil ('Workwear-Valley', 'Macher'). Gehe dabei zwingend auf das ein, was du auf dem Bild gesehen hast!
+           - Wenn PLAUSIBEL: Entschuldige dich für den Defekt und kündige z.B. einen kostenlosen Ersatz im Strauss-Stil an.
+           - Wenn UNPLAUSIBEL (z.B. Bild zeigt puren Verschleiß): Formuliere eine FREUNDLICHE ABLEHNUNG im Strauss-Stil ('Workwear-Valley', 'Macher', Schreibe aktiv, dynamisch und lösungsorientiert, Nutze Begriffe wie 'Workwear', 'Features' oder 'Style', um modern zu klingen., Werte das Handwerk emotional auf (z. B. Baustelle = Arena, Handwerk = Leidenschaft) Verwende kurze Sätze, die den praktischen Nutzen (Bequemlichkeit, Robustheit, Flexibilität) sofort auf den Punkt bringen  ). Gehe dabei zwingend auf das ein, was du auf dem Bild gesehen hast!
 
         Antworte AUSSCHLIESSLICH in folgendem JSON-Format:
         {
